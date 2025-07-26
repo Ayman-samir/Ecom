@@ -1,13 +1,14 @@
 ﻿using Ecom.core.Dtos.Products;
 using Ecom.core.Entities.Product;
 using Ecom.core.Interfaces;
+using Ecom.core.Sharing;
 
 namespace Ecom.Infrastructture.Repositories
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
         // for future
-        Task<IEnumerable<ProductDto>> GetAllAsync(string sort, int? CategoryId, int pageSize, int pageNumber);
+        Task<IEnumerable<ProductDto>> GetAllAsync(ProductParams productParams);
         Task<bool> AddAsync(AddProductDto productDto);
         Task<bool> UpdateAsync(int id, UpdateProductDto updateProductDto);
         Task<bool> DeleteAsync(int id);

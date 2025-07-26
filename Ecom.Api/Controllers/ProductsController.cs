@@ -2,6 +2,7 @@
 using Ecom.Api.helper;
 using Ecom.core.Dtos.Products;
 using Ecom.core.Interfaces;
+using Ecom.core.Sharing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecom.Api.Controllers
@@ -14,12 +15,12 @@ namespace Ecom.Api.Controllers
         {
         }
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllProducts(string? sort, int? CategoryId, int pageSize, int pageNumber)
+        public async Task<IActionResult> GetAllProducts([FromQuery]ProductParams productParams)
         {
             try
             {
                 //var products = await _unitOfWork.ProductRepository.GetAllAsync(x => x.Category, x => x.Photos);
-                var products = await _unitOfWork.ProductRepository.GetAllAsync(sort, CategoryId, pageSize, pageNumber);
+                var products = await _unitOfWork.ProductRepository.GetAllAsync(productParams);
                 //var products = await _unitOfWork.ProductRepository.GetAllAsync();
                 if (products is null) return NotFound(new ResponseApi(404, "Products Not Founds"));
                 /* var productDto = products.Select(p => new ProductDto

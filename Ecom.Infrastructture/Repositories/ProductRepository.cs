@@ -2,6 +2,7 @@
 using Ecom.core.Dtos.Products;
 using Ecom.core.Entities.Product;
 using Ecom.core.Services;
+using Ecom.core.Sharing;
 using Ecom.Infrastructture.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,7 @@ namespace Ecom.Infrastructture.Repositories
             _context = context;
             _imageMangmentService = imageMangmentService;
         }
-        public async Task<IEnumerable<ProductDto>> GetAllAsync(string sort, int? CategoryId, int pageSize, int pageNumber)
+        public async Task<IEnumerable<ProductDto>> GetAllAsync(ProductParams productParams)
         {
             var query = _context.Products
                 .Include(p => p.Category)
@@ -26,12 +27,12 @@ namespace Ecom.Infrastructture.Repositories
                 .AsNoTracking();
 
             //filtering by catgory id
-            if (CategoryId.HasValue)
+            if (productParams.CategoryId.HasValue)
             {
-                query = query.Where(pr => pr.CategoryId == CategoryId);
+                query = query.Where(pr => pr.CategoryId == productParams.CategoryId);
             }
 
-            if (!string.IsNullOrEmpty(sort))
+            if (!string.IsNullOrEmpty(productParams.Sort))
             {
                 //switch (sort)
                 //{
@@ -45,17 +46,17 @@ namespace Ecom.Infrastructture.Repositories
                 //        query = query.OrderBy(p => p.Name);
                 //        break;
                 //}
-                query = sort switch
+                query = productParams.Sort switch
                 {
                     "PriceAsc" => query.OrderBy(p => p.NewPrice),
                     "PriceDecs" => query.OrderByDescending(p => p.NewPrice),
                     _ => query.OrderBy(p => p.Name),
                 };
             }
-            pageNumber = pageNumber > 0 ? pageNumber : 0;
-            pageSize = pageSize > 0 ? pageSize : 10;
+            productParams.PageNumber = productParams.PageNumber > 0 ? productParams.PageNumber : 0;
+            productParams.PageSize = productParams.PageSize > 0 ? productParams.PageSize : 10;
 
-            query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            query = query.Skip((productParams.PageNumber - 1) * productParams.PageSize).Take(productParams.PageSize);
             var result = _mapper.Map<IEnumerable<ProductDto>>(query);
             return result;
         }

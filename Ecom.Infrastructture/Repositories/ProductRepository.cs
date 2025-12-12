@@ -26,7 +26,23 @@ namespace Ecom.Infrastructture.Repositories
                 .Include(p => p.Photos)
                 .AsNoTracking();
 
+
+            //filter by word search
+            if (!string.IsNullOrEmpty(productParams.Search))
+            {
+                /*query = query.Where(pr => pr.Name.ToLower().Contains(productParams.Search.ToLower())
+                ||
+                pr.Description.ToLower().Contains(productParams.Search.ToLower()));*/
+                var searchword = productParams.Search.Split(' ');
+                query = query.Where(m => searchword.All(word =>
+                    m.Name.ToLower().Contains(word.ToLower()) ||
+                    m.Description.ToLower().Contains(word.ToLower()))
+
+                );
+
+            }
             //filtering by catgory id
+            //In C#, HasValue is a property used with nullable value types (e.g., int?, bool?, DateTime?, etc.). It tells you whether the nullable variable actually contains a value or is null.
             if (productParams.CategoryId.HasValue)
             {
                 query = query.Where(pr => pr.CategoryId == productParams.CategoryId);

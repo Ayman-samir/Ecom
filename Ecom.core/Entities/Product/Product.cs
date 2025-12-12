@@ -14,5 +14,7 @@ namespace Ecom.core.Entities.Product
         public virtual Category Category { get; set; }
 
         public virtual List<Photo> Photos { get; set; }
+
+       
     }
 }

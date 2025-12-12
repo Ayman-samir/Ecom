@@ -7,6 +7,7 @@
         public int MaxPageSize { get; set; } = 6;
         public int PageNumber { get; set; } = 1;
 
+        public string? Search { get; set; }
         private int _pageSize = 3;
 
         public int PageSize

@@ -15,7 +15,7 @@ namespace Ecom.Api.Controllers
         {
         }
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllProducts([FromQuery]ProductParams productParams)
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductParams productParams)
         {
             try
             {
@@ -31,7 +31,8 @@ namespace Ecom.Api.Controllers
                      Photos = p.Photos
                  });*/
                 var productsDto = _mapper.Map<List<ProductDto>>(products);
-                return Ok(productsDto);
+                var totalCount = await _unitOfWork.ProductRepository.TotalCountAsync();
+                return Ok(new Pagination<ProductDto>(productParams.PageNumber, productParams.PageSize, totalCount, productsDto));
             }
             catch (Exception ex)
             {
